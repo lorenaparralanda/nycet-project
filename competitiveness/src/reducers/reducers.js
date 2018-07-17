@@ -112,7 +112,6 @@ export function winningCandidateReducer(state=d3.map(), action){
 
 export function highlightedEdDataReducer(state={
     //dunno if this is needed
-    county: null,
     ed: 0,
     acs: [{}],
     census: [{}],
@@ -120,8 +119,6 @@ export function highlightedEdDataReducer(state={
     edMetrics: [{}],
     demoType: 'acs'}, action){
       switch (action.type) {
-        case 'SELECT_COUNTY':
-          return {...state, county: action.payload}
         case 'SELECT_ED':
           return {...state, ed: action.payload}
         case 'LOAD_ACS':

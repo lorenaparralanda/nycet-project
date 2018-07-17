@@ -26,7 +26,6 @@ const getEdQuery = (parentDist, election, selected) => (
 {columns: [`e.pl_margin_${election.toString().toLowerCase()} as most_rec_pl_margin`,
            'd.ad',
            'e.countyed',
-           'd.county',
            `e.wp_${election.toString().toLowerCase()} as winning_party`,
            `e.wc_${election.toString().toLowerCase()} as winning_candidate`,
            'p.map as winning_pol_lean'],

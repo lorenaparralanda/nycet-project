@@ -29,7 +29,6 @@ export const loadHLData = (parentDistrictType, parentDistrictId, selectedElectio
               dispatch(storeMapData({geoJson: filteredGeo, geoData: dataMap},
                                     'LOAD_MAP_DATA'))
 
-              dispatch(setCounty(filteredData[0].county))
               dispatch(storePartyData(formatToMap(filteredData, 'winning_party')))
               dispatch(storeCandidateData(formatToMap(filteredData, 'winning_candidate')))
               //
@@ -112,10 +111,6 @@ export const changeDistrict = (distType, parentDist, selected) => (
 export const setED = (ed) => (
   {type: 'SELECT_ED',
    payload: ed}
-)
-export const setCounty = (county) => (
-  {type: 'SELECT_COUNTY',
-   payload: county}
 )
 
 export const changeElection = (election) => (
