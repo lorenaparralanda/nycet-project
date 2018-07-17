@@ -56,16 +56,7 @@ export function isLoadingReducer(state=false, action){
   }
 }
 
-export function selectedIdReducer(state=0, action){
-  switch (action.type) {
-    case 'SELECTED_DISTRICT':
-      return action.payload
-    default:
-      return state
-  }
-}
-
-export function parentDistrictTypeReducer(state='AD', action){
+export function parentDistrictTypeReducer(state='CD', action){
   switch (action.type) {
     case 'CHANGE_DISTRICT_TYPE':
       return action.payload.parent
@@ -158,6 +149,16 @@ export function tooltipReducer(state={
     case 'ACTIVATE_GLOW_ONLY':
       return { ...state,
                districtNumber: action.payload}
+    default:
+      return state
+  }
+}
+
+
+export function allRegionsReducer(state=['NYC'], action){
+  switch (action.type) {
+    case 'LOAD_REGIONS':
+      action.payload
     default:
       return state
   }

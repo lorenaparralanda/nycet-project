@@ -26,7 +26,9 @@ const NYCETAppReducers = combineReducers({
   winningCandidate: winningCandidateReducer,
   highlightedEdData: highlightedEdDataReducer,
   tooltip: tooltipReducer,
-  isLoading: isLoadingReducer
+  isLoading: isLoadingReducer,
+  allRegions: allRegionsReducer,
+  selectedRegion: selectedRegionReducer
 });
 
 export default NYCETAppReducers;
