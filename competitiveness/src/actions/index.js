@@ -3,6 +3,7 @@ import { getGeoSource, queryDB, makeEdPayload } from './queryHelpers'
 import tabMapping from '../data/tabMapping'
 import axios from 'axios'
 const d3 = require('d3');
+const AWS = require('aws-sdk');
 const MAPPING = tabMapping
 
 export const loadHLData = (parentDistrictType, parentDistrictId, selectedElection, childDistrict) => dispatch =>  {
@@ -76,6 +77,21 @@ export const loadEDData = (ed, election) => dispatch => {
   })
 }
 
+export const determineRegionsFromS3 = () => dispatch => {
+  let awsParams = {accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
+               secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+               region: 'us-east-1'}
+  let S3Params = {Bucket: 'nycet-docs'}
+  AWS.config.update(awsParams)
+
+  let s3 = new AWS.S3();
+  s3.listObjects(S3Params, function(err, data) {
+    if (err) {console.log(err)}
+    console.log(data)
+    dispatch({type: 'LOAD_REGIONS', payload: data})
+  })
+}
+
 //PURE ACTIONS
 
 export const storeMapData = (mapObj, actionType) => ( 
@@ -140,3 +156,4 @@ export const activateGlow = (distNumber) => (
   {type: 'ACTIVATE_GLOW_ONLY',
    payload: distNumber}
 )
+

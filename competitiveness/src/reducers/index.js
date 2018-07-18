@@ -10,7 +10,9 @@ import { mapDataReducer,
          winningCandidateReducer,
          highlightedEdDataReducer,
          tooltipReducer,
-         isLoadingReducer
+         isLoadingReducer,
+         allRegionsReducer,
+         selectedRegionReducer
  } from './reducers';
 
 

@@ -158,7 +158,16 @@ export function tooltipReducer(state={
 export function allRegionsReducer(state=['NYC'], action){
   switch (action.type) {
     case 'LOAD_REGIONS':
-      action.payload
+      return action.payload
+    default:
+      return state
+  }
+}
+
+export function selectedRegionReducer(state='NYC', action){
+  switch (action.type) {
+    case 'SELECT_REGION':
+      return action.payload
     default:
       return state
   }
