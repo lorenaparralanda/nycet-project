@@ -1,10 +1,11 @@
 import { Dropdown } from 'semantic-ui-react';
 import { connect } from 'react-redux'; 
 import { withRouter } from 'react-router-dom';
+import RegionPicker from './RegionPicker.jsx';
 const React = require('react');
 
 const ParentHeaderContainer = withRouter(({districtType, changeDistrict, history}) => (
-    <h1>New York City Competitiveness - <Dropdown options={
+    <h1><RegionPicker /> Competitiveness - <Dropdown options={
         [{text: 'Congressional District', value: 'CD'},
          {text: 'State Senate District', value: 'SD'},
          {text: 'State Assembly District', value: 'AD'},

@@ -79,16 +79,21 @@ export const loadEDData = (ed, election) => dispatch => {
 
 export const determineRegionsFromS3 = () => dispatch => {
   let awsParams = {accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY,
-               secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
-               region: 'us-east-1'}
-  let S3Params = {Bucket: 'nycet-docs'}
+                   secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+                   region: 'us-east-1'}
+  let S3Params = {Bucket: 'nycet-docs',
+                  Prefix: 'regional-locations/',
+                  Delimiter: '*/'}
   AWS.config.update(awsParams)
 
   let s3 = new AWS.S3();
   s3.listObjects(S3Params, function(err, data) {
     if (err) {console.log(err)}
-    console.log(data)
-    dispatch({type: 'LOAD_REGIONS', payload: data})
+    let regions = data.Contents.map((c) => c.Key)
+    let regionsFinal = regions.map((r) => r.split('/')[1])
+    regionsFinal = [...new Set(regionsFinal)] 
+    regionsFinal = regionsFinal.filter((r) => r.length > 1) 
+    dispatch({type: 'LOAD_REGIONS', payload: regionsFinal})
   })
 }
 

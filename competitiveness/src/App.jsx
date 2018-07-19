@@ -21,11 +21,12 @@ class AppContainer extends Component {
     let params = queryString.parse(nextProps.location.search)
     let election = params.election
     let childDistrict = params.ED
+    //let selectedRegion = params.region
     // eventually, determine region by param here
     // queries should also take in region as an arg
 
     if (!nextProps.isLoading) {
-      if (typeof(nextProps.match.params.allRegions) === 'undefined') {
+      if (typeof(prevState.allRegions) === 'undefined') {
         nextProps.determineRegionsFromS3();
       }
       if (typeof(prevState.parentDistrictType) === 'undefined') {
@@ -65,7 +66,8 @@ const mapStateToProps = (state) => (
  {parentDistrictType: state.parentDistrictType,
   selectedDistrict: state.selectedDistrict,
   election: state.selectedElection,
-  isLoading: state.isLoading}
+  isLoading: state.isLoading,
+  allRegions: state.allRegions}
 )
 
 const App = withRouter(connect(mapStateToProps, {loadHLData: loadHLData,
