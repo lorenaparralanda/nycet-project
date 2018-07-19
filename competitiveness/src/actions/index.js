@@ -6,20 +6,22 @@ const d3 = require('d3');
 const AWS = require('aws-sdk');
 const MAPPING = tabMapping
 
-export const loadHLData = (parentDistrictType, parentDistrictId, selectedElection, childDistrict) => dispatch =>  {
+export const loadHLData = (parentDistrictType, parentDistrictId, selectedElection, childDistrict, region) => dispatch =>  {
     //determine/declare vars
     let selected  = parentDistrictId
     let districtType = (selected === 0) ? parentDistrictType : 'ED'
     let election = (typeof(selectedElection) === 'undefined') ? parentDistrictType : selectedElection
+    region = (typeof(region) === 'undefined') ? 'NYC' : region
 
     //dispatch vars
     dispatch({type: 'IS_LOADING'})
     dispatch(changeDistrict(districtType, parentDistrictType, selected))
     dispatch(changeElection(election))
+    dispatch(selectRegion(region))
 
-    queryDB(parentDistrictType, election, selected).then(dataPull => {
+    queryDB(parentDistrictType, election, selected, region).then(dataPull => {
         d3.queue()
-          .defer(d3.json, getGeoSource(districtType)) 
+          .defer(d3.json, getGeoSource(districtType, region)) 
           .await((error, geoFile) => {
             let [filteredGeo,
                  filteredData] = filterAndProcess(geoFile, dataPull.data, districtType, selected);
@@ -162,3 +164,6 @@ export const activateGlow = (distNumber) => (
    payload: distNumber}
 )
 
+export const selectRegion = (region) => (
+  {type: 'SELECT_REGION',
+   payload: region})

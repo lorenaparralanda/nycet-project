@@ -2,9 +2,10 @@
 import axios from 'axios'
 
 //MAP METADATA
-export const getGeoSource = (dist) => (
-  `https://s3.amazonaws.com/nycet-docs/locational/${dist}.json`)
-
+export const getGeoSource = (dist, region) => {
+  region = region.replace(' ', '%20')
+  return `https://s3.amazonaws.com/nycet-docs/regional-locations/${region}/${dist}.json`
+}
 
 export const queryDB = (dist, election, selected) => {
   let query = (selected === 0) ? getHlQuery(dist) : getEdQuery(dist, election, selected)

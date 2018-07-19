@@ -21,28 +21,37 @@ class AppContainer extends Component {
     let params = queryString.parse(nextProps.location.search)
     let election = params.election
     let childDistrict = params.ED
-    //let selectedRegion = params.region
+    let selectedRegion = (typeof(params.region) === 'undefined') ? 'NYC' : params.region
+    console.log(params.region)
+    console.log(selectedRegion)
     // eventually, determine region by param here
     // queries should also take in region as an arg
 
     if (!nextProps.isLoading) {
+      //load all regions, if not there
       if (typeof(prevState.allRegions) === 'undefined') {
         nextProps.determineRegionsFromS3();
       }
+
+      //if no district type, just laod default districts
       if (typeof(prevState.parentDistrictType) === 'undefined') {
-        nextProps.loadHLData(parentDistrictType, selectedDistrict, election, childDistrict)
+        nextProps.loadHLData(parentDistrictType, selectedDistrict, election, childDistrict, selectedRegion)
       }
+
+      //if district type, district selection, or election ("big") changes, 
+      //load HL data
       else if ((parentDistrictType !== prevState.parentDistrictType) ||
                (selectedDistrict !== prevState.selectedDistrict) ||
-               (election !== prevState.election)) {
-        nextProps.loadHLData(parentDistrictType, selectedDistrict, election, childDistrict)
+               (election !== prevState.election) ||
+               (selectedRegion !== prevState.selectedRegion)) {
+        nextProps.loadHLData(parentDistrictType, selectedDistrict, election, childDistrict, selectedRegion)
       }
       else if ((childDistrict !== prevState.childDistrict) && (nextProps.election)) {
         if (typeof(childDistrict) === 'undefined'){ 
-          nextProps.loadHLData(parentDistrictType, selectedDistrict, election, childDistrict)
+          nextProps.loadHLData(parentDistrictType, selectedDistrict, election, childDistrict, selectedRegion)
         }
         else {
-          nextProps.loadEDData(childDistrict, nextProps.election)
+          nextProps.loadEDData(childDistrict, nextProps.election, selectedRegion)
         }
       }
   }
@@ -50,7 +59,9 @@ class AppContainer extends Component {
               selectedDistrict: selectedDistrict,
               childDistrict: childDistrict,
               election: election,
-              isLoading: nextProps.isLoading}
+              isLoading: nextProps.isLoading,
+              selectedRegion: selectedRegion,
+              allRegions: nextProps.allRegions}
   }
 
   render() {
@@ -67,7 +78,8 @@ const mapStateToProps = (state) => (
   selectedDistrict: state.selectedDistrict,
   election: state.selectedElection,
   isLoading: state.isLoading,
-  allRegions: state.allRegions}
+  allRegions: state.allRegions,
+  selectedRegion: state.selectedRegion}
 )
 
 const App = withRouter(connect(mapStateToProps, {loadHLData: loadHLData,
