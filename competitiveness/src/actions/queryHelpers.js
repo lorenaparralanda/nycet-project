@@ -3,25 +3,47 @@ import axios from 'axios'
 
 //MAP METADATA
 export const getGeoSource = (dist, region) => {
-  region = region.replace(' ', '%20')
-  return `https://s3.amazonaws.com/nycet-docs/regional-locations/${region}/${dist}.json`
+  let url;
+  if (dist !== 'ED') {
+    url = `https://s3.amazonaws.com/nycet-docs/state-level/${dist}.json`
+  } else {
+    region = region.replace(' ', '%20')
+    url = `https://s3.amazonaws.com/nycet-docs/ED/${region}-ED.json`
+  }
+  return url;
 }
 
-export const queryDB = (dist, election, selected) => {
-  let query = (selected === 0) ? getHlQuery(dist) : getEdQuery(dist, election, selected)
+export const queryDB = (dist, election, selected, region) => {
+  let query = (selected === 0) ? getHlQuery(dist, region) : getEdQuery(dist, election, selected)
   let table = (selected === 0) ? 'hl_metrics' : 'ed_metrics'
   return axios({method: 'post',
         url: `http://localhost:8080/table/${table}/`,
         data: query })
 }
 
-const getHlQuery = (dist) => (
-  {columns: ['district', 'most_rec_pl_margin',
-             'winning_pol_lean', 'winning_party',
-             'winning_candidate'],
-  filterOn: 'office',
-  filterBy: dist})
 
+const getHlQuery = (dist, region) => {
+  let filterText;
+  if (region === 'NYC') {
+    filterText = `edist.county IN ('Queens', 'New York', 'Kings', 'Bronx', 'Richmond')`
+  } else {
+    filterText = `edist.county = '${region}'`
+  }
+  return {columns: ['hl.district as district',
+             'edist.county as county',
+             'hl.most_rec_pl_margin as most_rec_pl_margin',
+             'hl.winning_pol_lean as winning_pol_lean', 
+             'hl.winning_party as winning_party',
+             'hl.winning_candidate as winning_candidate'],
+   addtlQuery: [' as hl',
+                'INNER JOIN',
+                `(select ${dist}, county from electiondistricts group by ${dist}, county) as edist`,
+               `on hl.district::text = edist.${dist}::text`,
+               `where ${filterText}`,
+               `and hl.office = '${dist}'`].join(' ')
+}
+
+}
 
 const getEdQuery = (parentDist, election, selected) => (
 {columns: [`e.pl_margin_${election.toString().toLowerCase()} as most_rec_pl_margin`,

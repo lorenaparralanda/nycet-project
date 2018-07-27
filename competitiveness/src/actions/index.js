@@ -25,7 +25,7 @@ export const loadHLData = (parentDistrictType, parentDistrictId, selectedElectio
           .await((error, geoFile) => {
             let [filteredGeo,
                  filteredData] = filterAndProcess(geoFile, dataPull.data, districtType, selected);
-            
+
             let dataMap = formatToMap(filteredData, 'most_rec_pl_margin')
 
               //dispatch processed data
@@ -84,18 +84,17 @@ export const determineRegionsFromS3 = () => dispatch => {
                    secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
                    region: 'us-east-1'}
   let S3Params = {Bucket: 'nycet-docs',
-                  Prefix: 'regional-locations/',
-                  Delimiter: '*/'}
+                  Prefix: 'ED/',
+                  Delimiter: '*-ED.json'}
   AWS.config.update(awsParams)
 
   let s3 = new AWS.S3();
   s3.listObjects(S3Params, function(err, data) {
     if (err) {console.log(err)}
     let regions = data.Contents.map((c) => c.Key)
-    let regionsFinal = regions.map((r) => r.split('/')[1])
-    regionsFinal = [...new Set(regionsFinal)] 
-    regionsFinal = regionsFinal.filter((r) => r.length > 1) 
-    dispatch({type: 'LOAD_REGIONS', payload: regionsFinal})
+    regions = regions.map((r) => (r.split('-')[0].split('/')[1]))
+    regions = regions.filter((r) => r.length > 1) 
+    dispatch({type: 'LOAD_REGIONS', payload: regions})
   })
 }
 
