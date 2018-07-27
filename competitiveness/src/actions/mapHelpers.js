@@ -11,7 +11,7 @@ const filterToParents = (geoFileFeatures, dataPull) => {
 }
 
 const filterToRegion = (geoFileFeatures, dataPull) => {
-    let validDistricts = dataPull.map((d) => d.district)
+    let validDistricts = dataPull.map((d) => parseInt(d.district, 10))
     return geoFileFeatures.filter((d) => (validDistricts.indexOf(d.properties.districtNumber) >= 0))
 }
 
@@ -32,11 +32,13 @@ export const filterAndProcess = (geoFile, dataPull, districtType, selected) => {
     filteredFeatures = filterToParents(geoFile.objects[objectsKey].geometries, dataPull)
   } else {
     filteredFeatures = filterToRegion(geoFile.objects[objectsKey].geometries, dataPull)
-    console.log(dataPull)
   }
+
+  geoFile.objects[objectsKey].geometries = filteredFeatures
 
   //get all valid regions in the geodata and filter data
   let regionIds = filteredFeatures.map((d) => (d.properties.districtNumber))
+  console.log(regionIds)
   let filteredData = dataPull.filter((d) => (regionIds.indexOf(
       parseInt(d.district, 10)) >= 0))
 

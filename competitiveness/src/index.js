@@ -21,8 +21,8 @@ const finalCreateStore = compose(
 let store = finalCreateStore(NYCETAppReducers)
 
 // debugging helper
-// const announce = () => console.log(store.getState())
-// setInterval(announce, 7000)
+const announce = () => console.log(store.getState())
+setInterval(announce, 7000)
 
 ReactDOM.render(
 <Provider store={store}>

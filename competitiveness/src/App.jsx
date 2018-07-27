@@ -22,8 +22,6 @@ class AppContainer extends Component {
     let election = params.election
     let childDistrict = params.ED
     let selectedRegion = (typeof(params.region) === 'undefined') ? 'NYC' : params.region
-    console.log(params.region)
-    console.log(selectedRegion)
     // eventually, determine region by param here
     // queries should also take in region as an arg
 
